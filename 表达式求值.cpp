@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #define OK 1
 #define ERROR 0
 #define TURE 1
@@ -43,6 +44,7 @@ int main(int argc, char** argv) {
 	double m;
 	Sqstackchar OPTR;
 	Sqstackdouble OPND;
+	
 	InitStackchar(OPTR);//初始化运算符栈 
 	InitStackdouble(OPND);//初始化运算数栈 
 	c='#';
@@ -56,7 +58,6 @@ int main(int argc, char** argv) {
 		{
 			while(!Inn(ch))
 			{
-				
 				a=a*10+(ch-48);
 				ch=getchar();	
 			}
@@ -183,7 +184,6 @@ Status Inn(SElemType c)
 		return ERROR;
 }
 
-
 double Operate(double a,SElemType theta,double b)
 {
 	double c;
@@ -202,99 +202,44 @@ double Operate(double a,SElemType theta,double b)
 	return c;
 }
 
-SElemType Precede(SElemType ch1,SElemType ch2)
-{
-	if(ch1=='+')
-	{
-		switch(ch2)
-		{
-			case '+':return '>';
-			case '-':return '>';
-			case '*':return '<';
-			case '/':return '<';
-			case '(':return '<';
-			case ')':return '>';
-			case '#':return '>';
-		}
-	}
-	else if(ch1=='-')
-	{
-		switch(ch2)
-		{
-			case '+':return '>';
-			case '-':return '>';
-			case '*':return '<';
-			case '/':return '<';
-			case '(':return '<';
-			case ')':return '>';
-			case '#':return '>';
-		}
-	}
+SElemType  Precede(char a, char b){
+    int i,j;
+    char pre[][7]={         
+	/*运算符之间的优先级制作成一张表格*/
 	
-	else if(ch1=='*')
-	{
-		switch(ch2)
-		{
-			case '+':return '>';
-			case '-':return '>';
-			case '*':return '>';
-			case '/':return '>';
-			case '(':return '<';
-			case ')':return '>';
-			case '#':return '>';
-		}
-	}
-	
-	else if(ch1=='/')
-	{
-		switch(ch2)
-		{
-			case '+':return '>';
-			case '-':return '>';
-			case '*':return '>';
-			case '/':return '>';
-			case '(':return '<';
-			case ')':return '>';
-			case '#':return '>';
-		}
-	}
-	
-	else if(ch1=='(')
-	{
-		switch(ch2)
-		{
-			case '+':return '<';
-			case '-':return '<';
-			case '*':return '<';
-			case '/':return '<';
-			case '(':return '<';
-			case ')':return '=';
-		}
-	}
-	
-	else if(ch1==')')
-	{
-		switch(ch2)
-		{
-			case '+':return '>';
-			case '-':return '>';
-			case '*':return '>';
-			case '/':return '>';
-			case ')':return '>';
-			case '#':return '>';
-		}
-	}
-	
-	else if(ch1=='#')
-	{
-		switch(ch2)
-		{
-			case '+':return '<';
-			case '-':return '<';
-			case '*':return '<';
-			case '/':return '<';
-			case '(':return '<';
-			case '#':return '=';
-		}
-	}
+//		+ - * / ( ) # 
+//	
+//	+  	> > < < < > > 
+//	-	> > < < < > > 
+//	*	> > > > < > > 
+//	/	> > > > < > >
+//	(	< < < < < = 0 
+//	)	> > > > 0 > > 
+//	# 	< < < < < 0 = 
+        {'>','>','<','<','<','>','>'},
+        {'>','>','<','<','<','>','>'},
+        {'>','>','>','>','<','>','>'},
+        {'>','>','>','>','<','>','>'},
+        {'<','<','<','<','<','=','0'},
+        {'>','>','>','>','0','>','>'},
+        {'<','<','<','<','<','0','='}};
+    switch(a){
+        case '+': i=0; break;
+        case '-': i=1; break;
+        case '*': i=2; break;
+        case '/': i=3; break;
+        case '(': i=4; break;
+        case ')': i=5; break;
+        case '#': i=6; break;
+    }
+    switch(b){
+        case '+': j=0; break;
+        case '-': j=1; break;
+        case '*': j=2; break;
+        case '/': j=3; break;
+        case '(': j=4; break;
+        case ')': j=5; break;
+        case '#': j=6; break;
+    }
+    return pre[i][j];
 }
