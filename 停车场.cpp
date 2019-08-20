@@ -5,32 +5,31 @@
 #define TRUE 1
 #define MAX 3
 
-typedef struct Node   //数据
-{
+typedef struct Node{   //数据
+
     int number;
     int time;
 }Node;
 
-typedef struct QueueNode1   //队列结点
-{
+typedef struct QueueNode1{   //队列结点
+
     Node infom;
     struct QueueNode1 * next;
 }*QueueNode;
 
-typedef struct LinkQueue    //链队列
-{
+typedef struct LinkQueue{    //链队列
+
     struct QueueNode1 * front;
     struct QueueNode1 * rear;
 }LinkQueue;
 
-typedef struct stack         //栈结点
-{
+typedef struct stack{         //栈结点
+
     struct Node data;
     struct stack *next;
 }*StackNode;
 
-typedef struct LinkStack     //链栈
-{
+typedef struct LinkStack{     //链栈
     StackNode top;
     int count;
 }LinkStack;
@@ -43,13 +42,14 @@ int linklength(LinkQueue q);//查看长度
 int enqueue(LinkQueue *q,int num,int t);//入队列
 int dequeue(LinkQueue *q,int *num,int *t);//出队列
 void park1(LinkQueue *wait,LinkQueue *park);//停车函数
+
 int push(LinkStack *s,int num,int t);//入栈
 int pop(LinkStack *s,int *num,int *t);//出栈
+
 void leave2(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t);//离开函数
 void view3(LinkQueue wait,LinkQueue park);//查看停车场状态
 
-int main()
-{
+int main(){
     LinkQueue wait;
     LinkQueue park;
     LinkStack giveway;
@@ -60,13 +60,11 @@ int main()
     return 0;
 }
 
-int init(LinkQueue *wait,LinkQueue *park,LinkStack *giveway)
-{
+int init(LinkQueue *wait,LinkQueue *park,LinkStack *giveway){
+	
     QueueNode newnode1 = (QueueNode)malloc(sizeof(struct QueueNode1));
     if(!newnode1)
-    {
         return FLASE;
-    }
     newnode1->next = NULL;
     wait->front = newnode1;
     wait->rear = newnode1;
@@ -84,14 +82,15 @@ int init(LinkQueue *wait,LinkQueue *park,LinkStack *giveway)
     giveway->count = 0;
 }
 
-void menu(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t)
-{
+void menu(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t){
+	
     printf("******************欢迎来停车!******************\n");
     printf("****************请选择需要的功能****************\n");
     printf("**********         1 : 停车.          **********\n");
     printf("**********         2 : 离开.         **********\n");
     printf("**********         3 : 状况.          **********\n");
     printf("**********         4 : 祝福语.        **********\n");
+    
     int option;
     scanf("%d",&option);
     switch(option)
@@ -125,8 +124,8 @@ void menu(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t)
 
 }
 
-int linklength(LinkQueue q)
-{
+int linklength(LinkQueue q){
+	
     int i = 0;
     while(q.front != q.rear)
     {
@@ -136,42 +135,43 @@ int linklength(LinkQueue q)
     return i;
 }
 
-int enqueue(LinkQueue *q,int num,int t)
-{
+int enqueue(LinkQueue *q,int num,int t){
+	
     QueueNode newnode = (QueueNode)malloc(sizeof(struct QueueNode1));
     if(NULL == newnode)
-    {
         return FLASE;
-    }
+    
     newnode->infom.number = num;
     newnode->infom.time = t;
+    
     newnode->next = NULL;
+    
     q->rear->next = newnode;
     q->rear = newnode;
     return TRUE;
 }
 
-int dequeue(LinkQueue *q,int *num,int *t)
-{
+int dequeue(LinkQueue *q,int *num,int *t){
     if(q->front == q->rear)
     {
         printf("该停车场没此车!\n");
         return FLASE;
     }
-    *num = q->front->next->infom.number;
-    *t = q->front->next->infom.time;
+    
     QueueNode temp = q->front->next;
+    
+    *num = temp->infom.number;
+    *t = temp->infom.time;
+
     q->front->next = temp->next;
+    
     if(temp->next == NULL)
-    {
         q->rear = q->front;
-    }
     free(temp);
     return TRUE;
 }
 
-void park1(LinkQueue *wait,LinkQueue *park)
-{
+void park1(LinkQueue *wait,LinkQueue *park){
     printf("请输入车号和停车时间\n");
     int num,t;
     scanf("%d%d",&num,&t);
@@ -181,49 +181,48 @@ void park1(LinkQueue *wait,LinkQueue *park)
         enqueue(wait,num,t);
     }
     else
-    {
         enqueue(park,num,t);
-    }
 }
 
-int push(LinkStack *s,int num,int t)
-{
+int push(LinkStack *s,int num,int t){
+	
     StackNode newnode = (StackNode)malloc(sizeof(struct stack));
     if(NULL == newnode)
-    {
         return FLASE;
-    }
+        
     newnode->data.number = num;
     newnode->data.time = t;
     newnode->next = s->top;
+    
     s->top = newnode;
     s->count++;
     return TRUE;
 }
 
-int pop(LinkStack *s,int *num,int *t)
-{
+int pop(LinkStack *s,int *num,int *t){
     if(s->count==0)
     {
         printf("该停车场没车!\n");
         return FLASE;
     }
-    *num = s->top->data.number;
-    *t = s->top->data.time;
     StackNode temp = s->top;
-    s->top = s->top->next;
+    
+    *num = temp->data.number;
+    *t = temp->data.time;
+    s->top = temp->next;
+    
     free(temp);
     s->count--;
     return TRUE;
 }
 
-void leave2(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t)
-{
+void leave2(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t){
     printf("请输入要离开车的车号\n");
     int leavenumber;
     scanf("%d",&leavenumber);
     int i = 0;
     QueueNode head = park->front;
+    
     while(head != park->rear)
     {
         if(head->next->infom.number != leavenumber)
@@ -234,6 +233,7 @@ void leave2(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t)
         else
             break;
     }
+    
     int j = 0;
     if(i <= MAX-1)
     {
@@ -246,37 +246,36 @@ void leave2(LinkQueue *wait,LinkQueue *park,LinkStack *giveway,int num,int t)
         dequeue(park,&num,&t);
     }
     else
-    {
         printf("查无此车！\n");
-    }
-    while(giveway->top != NULL)
-    {
+        
+    while(giveway->top != NULL){
         pop(giveway,&num,&t);
         enqueue(park,num,t);
     }
-    if(linklength(*wait) != 0)
-    {
+    
+    if(linklength(*wait) != 0){
         dequeue(wait,&num,&t);
         enqueue(park,num,t);
     }
 }
 
-void view3(LinkQueue wait,LinkQueue park)
-{
+void view3(LinkQueue wait,LinkQueue park){
     printf("********************    目前停车场状况    ********************\n");
     printf("停车场共%d个车位，当前停车场共有%d量车，等待区共有%d量车\n",
         MAX,linklength(park),linklength(wait));
     printf("**************************************************************\n");
     printf("车    号：");
+    
     QueueNode head1 = park.front;
     QueueNode head2 = park.front;
+    
     while(head1 != park.rear)
     {
         printf("%d  ",head1->next->infom.number);
         head1 = head1->next;
     }
-    printf("\n");
-    printf("停车时间：");
+    
+    printf("\n停车时间：");
     while(head2 != park.rear)
     {
         printf("%d ",head2->next->infom.time);
